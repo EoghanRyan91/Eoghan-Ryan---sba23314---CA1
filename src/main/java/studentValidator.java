@@ -78,8 +78,8 @@ public class studentValidator {
         }
 
         // Check if the student number follows the specified pattern
-        if (!studentNumber.matches("\\d{2}[A-Za-z]{2}\\d+")) {
-            System.out.println("Invalid student number: " + studentNumber + " (Should follow the specified pattern)");
+        if (!studentNumber.matches("(20\\d{3}[A-Za-z]{3}[1-9]\\d{0,2}|\\d{2}[A-Za-z]{3}[1-9]\\d{0,2})")) {
+            System.out.println("Invalid student number: " + studentNumber + " (Student number must begin with 20 or higher, with 3 letters after this, then a number between 1-200!)");
             return false;
         }
 
