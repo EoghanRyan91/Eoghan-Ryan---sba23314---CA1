@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 public class studentValidator {
 
@@ -8,6 +6,8 @@ public class studentValidator {
         validateStudentDetails("students.txt");
     }
 
+
+    // Method to validate student details
     public static void validateStudentDetails(String fileName) {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
@@ -35,6 +35,9 @@ public class studentValidator {
 
                 int numberOfClasses = Integer.parseInt(classesString);
 
+
+                // Run Checks
+
                 if (isValidDetails(firstName, secondName, numberOfClasses, studentNumber)) {
                     System.out.println("Student details are valid:");
                     System.out.println("First Name: " + firstName);
@@ -42,6 +45,7 @@ public class studentValidator {
                     System.out.println("Number of Classes: " + numberOfClasses);
                     System.out.println("Student Number: " + studentNumber);
                     System.out.println();
+                    writeValidStudentDetails(firstName, secondName, numberOfClasses, studentNumber); // this calls the write method to write only the valid student details to status.txt
                 } else {
                     System.out.println("Invalid student details:");
                     System.out.println("First Name: " + firstName);
@@ -56,6 +60,8 @@ public class studentValidator {
         }
     }
 
+
+    // Method to check valid details w/ Regular Expressions
     public static boolean isValidDetails(String firstName, String secondName, int numberOfClasses, String studentNumber) {
         // Validation criteria based on specified rules
 
@@ -94,6 +100,34 @@ public class studentValidator {
             return value >= 1 && value <= 8;
         } catch (NumberFormatException e) {
             return false;
+        }
+
+    }
+
+    // Method to write valid student details and workload status to "status.txt"
+    public static void writeValidStudentDetails(String firstName, String secondName, int numberOfClasses, String studentNumber) {
+        // Define workload status based on the specified rules
+        String workloadStatus;
+        if (numberOfClasses == 1) {
+            workloadStatus = "Very Light";
+        } else if (numberOfClasses == 2) {
+            workloadStatus = "Light";
+        } else if (numberOfClasses >= 3 && numberOfClasses <= 5) {
+            workloadStatus = "Part Time";
+        } else {
+            workloadStatus = "Full Time";
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("status.txt", true))) {
+            // Write first name and second name on one line
+            writer.write(firstName + " " + secondName);
+            writer.newLine();
+
+            // Write workload status on the line underneath
+            writer.write(workloadStatus);
+            writer.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
