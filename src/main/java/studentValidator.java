@@ -1,14 +1,96 @@
 import java.io.*;
+import java.util.Scanner;
+
 
 public class studentValidator {
 
+      // GitHub repo for the assignment
+      // https://github.com/EoghanRyan91/Eoghan-Ryan---sba23314---CA1
     public static void main(String[] args) {
-        validateStudentDetails("students.txt");
+        Scanner scanner = new Scanner(System.in);
+
+        // Starts a scanner to take user input on which mode they would like to use with the program, as per the criteria for a
+        // distinction
+
+        System.out.println("Welcome to the Student Details Validator!");
+
+        // Defines a while loop to take the user input and then run a switch/case with the input to determine the mode of use.
+        // Foe each of the respective modes I have broken the functionality into two methods; validateStudentDetails, which
+        // uses a file locally, and enterStudentDetailsManually, which allows users to enter manual details to be checked.
+
+        while (true) {
+            System.out.println("\nChoose an option:");
+            System.out.println("1. Read student details from a file");
+            System.out.println("2. Enter student details manually");
+            System.out.println("3. Exit");
+
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    validateStudentDetailsFromFile("students.txt");
+                    break;
+                case 2:
+                    enterStudentDetailsManually();
+                    break;
+                case 3:
+                    System.out.println("Exiting the program. Goodbye!");
+                    scanner.close();
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please enter a valid option.");
+            }
+        }
+    }
+
+    // Method code for the manual usage of the program
+
+    public static void enterStudentDetailsManually() {
+
+        // Taking user input and saving the details to relevant data
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter student details manually:");
+
+        System.out.print("First Name: ");
+        String firstName = scanner.next();
+
+        System.out.print("Second Name: ");
+        String secondName = scanner.next();
+
+        System.out.print("Number of Classes: ");
+        int numberOfClasses = scanner.nextInt();
+
+        System.out.print("Student Number: ");
+        String studentNumber = scanner.next();
+
+        // Validate and process the entered student details using a method called isValidDetails which contains many error checks and returns true if all are passed.
+        // If all details are correct, if value is TRUE and the console outputs a success message.
+
+        if (isValidDetails(firstName, secondName, numberOfClasses, studentNumber)) {
+            System.out.println("Student details are valid:");
+            System.out.println("First Name: " + firstName);
+            System.out.println("Second Name: " + secondName);
+            System.out.println("Number of Classes: " + numberOfClasses);
+            System.out.println("Student Number: " + studentNumber);
+
+            // Write valid student details to "status.txt" if they pass the RegEx checks inside isValidDetails. writeValidStudentDetails is defined later in the code
+
+            writeValidStudentDetails(firstName, secondName, numberOfClasses, studentNumber);
+
+            // Do not write the details if isValidDetails is FALSE and show the user the error
+
+        } else {
+            System.out.println("Invalid student details. Not written to the file.");
+        }
     }
 
 
-    // Method to validate student details
-    public static void validateStudentDetails(String fileName) {
+    // Method to validate student details from a file called students.txt
+
+    public static void validateStudentDetailsFromFile(String fileName) {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
 
@@ -16,7 +98,6 @@ public class studentValidator {
                 // Split the line into first name and second name
                 String[] names = line.split(" ");
                 if (names.length < 2) {
-                    System.out.println("Invalid line format: " + line);
                     continue;
                 }
 
@@ -39,7 +120,7 @@ public class studentValidator {
                 // Run Checks
 
                 if (isValidDetails(firstName, secondName, numberOfClasses, studentNumber)) {
-                    System.out.println("Student details are valid:");
+                    System.out.println("Student details are valid and have been exported to status.txt!");
                     System.out.println("First Name: " + firstName);
                     System.out.println("Second Name: " + secondName);
                     System.out.println("Number of Classes: " + numberOfClasses);
@@ -47,7 +128,6 @@ public class studentValidator {
                     System.out.println();
                     writeValidStudentDetails(firstName, secondName, numberOfClasses, studentNumber); // this calls the write method to write only the valid student details to status.txt
                 } else {
-                    System.out.println("Invalid student details:");
                     System.out.println("First Name: " + firstName);
                     System.out.println("Second Name: " + secondName);
                     System.out.println("Number of Classes: " + numberOfClasses);
@@ -61,7 +141,8 @@ public class studentValidator {
     }
 
 
-    // Method to check valid details w/ Regular Expressions
+    // Method to check valid details w/ Regular Expressions used in earlier methods in code
+
     public static boolean isValidDetails(String firstName, String secondName, int numberOfClasses, String studentNumber) {
         // Validation criteria based on specified rules
 
@@ -125,6 +206,7 @@ public class studentValidator {
 
             // Write workload status on the line underneath
             writer.write(workloadStatus);
+            writer.newLine();
             writer.newLine();
         } catch (IOException e) {
             e.printStackTrace();
